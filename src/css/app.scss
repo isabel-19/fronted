@@ -1,0 +1,360 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,900&display=swap');
+
+/* ============================================================
+   Vimel — Sistema de diseño "Amanecer en el campo"
+   Fuente única de la verdad. Tipografía Fraunces + Nunito Sans.
+   Paleta: aire (fondo) · campo (estructura) · sol (acción) · río (enlaces)
+   ============================================================ */
+:root {
+	/* --- Paleta natural --- */
+	--aire-0: #f5fbf8; /* fondo más claro */
+	--aire-1: #e9f4f0; /* fondo base app */
+	--aire-2: #dfeee8;
+	--sol: #f8b62d;
+	--sol-glow: #ffe6a8;
+	--cta-gold: #f2a734;
+	--cta-gold-strong: #e59a26;
+	--rio: #1f9aa8; /* teal enlaces/foco (un punto más oscuro = mejor contraste) */
+	--rio-soft: #7adbe2;
+	--campo-claro: #86cc9e;
+	--campo: #34b36a;
+	--campo-hondo: #1f8b57;
+	--bosque: #173a27; /* texto principal */
+
+	/* compat con clases antiguas */
+	--green-0: #f4fbf6;
+	--green-1: #e7f7ec;
+	--green-2: #d6f0e0;
+	--green-5: #2ecc71;
+	--green-6: #27ae60;
+	--forest: #173a27;
+	--amber-soft: #f6c343;
+
+	/* --- Texto (jerarquía por color) --- */
+	--ink: #173a27;
+	--ink-2: rgba(23, 58, 39, 0.66); /* secundario */
+	--ink-3: rgba(23, 58, 39, 0.48); /* terciario / captions */
+	--line: rgba(23, 58, 39, 0.1); /* divisores */
+	--line-strong: rgba(23, 58, 39, 0.16);
+
+	/* --- Escala tipográfica --- */
+	--fs-eyebrow: 0.74rem;
+	--fs-caption: 0.82rem;
+	--fs-body: 0.95rem;
+	--fs-lead: 1.05rem;
+	--fs-h3: clamp(1.1rem, 2vw, 1.3rem);
+	--fs-h2: clamp(1.25rem, 2.6vw, 1.6rem);
+	--fs-h1: clamp(1.7rem, 3.8vw, 2.3rem);
+
+	/* --- Espaciado --- */
+	--sp-1: 4px;
+	--sp-2: 8px;
+	--sp-3: 12px;
+	--sp-4: 16px;
+	--sp-5: 24px;
+	--sp-6: 32px;
+	--sp-7: 48px;
+	--sp-8: 64px;
+
+	/* --- Radios --- */
+	--r-sm: 10px;
+	--r-md: 14px;
+	--r-lg: 18px;
+	--r-xl: 24px;
+
+	/* --- Sombras (suaves, cálidas) --- */
+	--sh-1: 0 4px 14px rgba(23, 58, 39, 0.06);
+	--sh-2: 0 12px 28px rgba(23, 58, 39, 0.1);
+	--sh-3: 0 20px 48px rgba(23, 58, 39, 0.14);
+	--sh-sol: 0 10px 22px rgba(242, 167, 52, 0.34);
+}
+
+body {
+	background: var(--aire-1);
+	color: var(--ink);
+	font-family: 'Nunito Sans', 'Segoe UI', sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.q-page {
+	background: transparent;
+}
+
+/* Fondo cálido sutil del contenedor de páginas (amanecer arriba) */
+.q-page-container {
+	background:
+		radial-gradient(1200px 360px at 78% -120px, rgba(248, 182, 45, 0.1), transparent 70%),
+		linear-gradient(180deg, var(--aire-0) 0%, var(--aire-1) 460px);
+}
+
+/* ============================================================
+   Tipografía utilitaria
+   ============================================================ */
+.font-fraunces {
+	font-family: 'Fraunces', Georgia, serif;
+}
+
+.v-eyebrow {
+	text-transform: uppercase;
+	letter-spacing: 0.16em;
+	font-weight: 800;
+	font-size: var(--fs-eyebrow);
+	color: var(--campo-hondo);
+	margin: 0;
+}
+.v-title,
+.page-title {
+	font-family: 'Fraunces', Georgia, serif;
+	font-weight: 800;
+	color: var(--bosque);
+	font-size: var(--fs-h1);
+	line-height: 1.12;
+	margin: 0.15rem 0 0;
+}
+.v-section-title,
+.section-title {
+	font-family: 'Fraunces', Georgia, serif;
+	font-weight: 700;
+	color: var(--bosque);
+	font-size: var(--fs-h2);
+	line-height: 1.15;
+	margin: 0;
+}
+.v-sub,
+.page-sub {
+	color: var(--ink-2);
+	font-weight: 600;
+	margin: 0.35rem 0 0;
+}
+.text-forest,
+.text-bosque {
+	color: var(--bosque);
+}
+.text-campo {
+	color: var(--campo-hondo);
+}
+.text-ink-2 {
+	color: var(--ink-2);
+}
+
+/* Encabezado de página estándar (Krug: "¿qué es esta página?") */
+.page-head {
+	margin-bottom: var(--sp-5);
+}
+
+/* ============================================================
+   Superficies / tarjetas
+   ============================================================ */
+.surface,
+.v-card {
+	background: #fff;
+	border: 1px solid var(--line);
+	border-radius: var(--r-xl);
+	box-shadow: var(--sh-2);
+}
+.surface--pad {
+	padding: var(--sp-5);
+}
+.card-green {
+	border-radius: var(--r-lg);
+	background: linear-gradient(145deg, #ffffff 0%, var(--green-0) 100%);
+	border: 1px solid rgba(46, 204, 113, 0.16);
+	box-shadow: var(--sh-2);
+}
+.v-card--glass {
+	background: rgba(255, 255, 255, 0.74);
+	backdrop-filter: blur(14px);
+	-webkit-backdrop-filter: blur(14px);
+	border: 1px solid rgba(255, 255, 255, 0.7);
+	border-radius: var(--r-xl);
+	box-shadow: var(--sh-3);
+}
+.bg-green-soft {
+	background: var(--green-0) !important;
+}
+
+/* Sección "head" reutilizable: eyebrow + título + acción a la derecha */
+.section-bar {
+	display: flex;
+	align-items: flex-end;
+	justify-content: space-between;
+	gap: var(--sp-4);
+	margin-bottom: var(--sp-3);
+}
+
+/* ============================================================
+   Botones (sin MAYÚSCULAS — Krug: lee como una orden clara)
+   ============================================================ */
+.q-btn {
+	text-transform: none;
+	letter-spacing: normal;
+	border-radius: var(--r-md);
+	font-weight: 700;
+}
+.q-btn .q-btn__content {
+	text-transform: none;
+}
+
+/* CTA "sol" — la acción más importante de la pantalla (acento único) */
+.btn-sol {
+	background: linear-gradient(180deg, var(--cta-gold) 0%, var(--cta-gold-strong) 100%) !important;
+	color: var(--bosque) !important;
+	font-weight: 800;
+	border-radius: var(--r-md);
+	box-shadow: var(--sh-sol);
+	transition:
+		transform 0.18s ease,
+		box-shadow 0.18s ease;
+}
+.btn-sol:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 14px 28px rgba(242, 167, 52, 0.44);
+}
+.btn-sol.disabled,
+.btn-sol[disabled] {
+	box-shadow: none;
+}
+
+/* Botón "campo" — primario verde */
+.btn-campo {
+	background: linear-gradient(180deg, var(--campo) 0%, var(--campo-hondo) 100%) !important;
+	color: #fff !important;
+	font-weight: 800;
+	border-radius: var(--r-md);
+	box-shadow: 0 10px 22px rgba(31, 139, 87, 0.26);
+}
+.btn-green {
+	border-radius: var(--r-md);
+}
+
+/* Chips */
+.chip-soft,
+.chip-green {
+	background: rgba(52, 179, 106, 0.12) !important;
+	color: var(--campo-hondo) !important;
+	font-weight: 700;
+	border-radius: 999px;
+}
+.fav-pill {
+	background: rgba(23, 58, 39, 0.42);
+	backdrop-filter: blur(4px);
+	color: #fff;
+}
+
+/* ============================================================
+   Estadística / "stat" reutilizable
+   ============================================================ */
+.stat {
+	background: rgba(52, 179, 106, 0.08);
+	border: 1px solid rgba(52, 179, 106, 0.16);
+	border-radius: var(--r-md);
+	padding: var(--sp-4);
+}
+.stat__num {
+	font-family: 'Fraunces', Georgia, serif;
+	font-weight: 800;
+	font-size: 1.7rem;
+	line-height: 1;
+	color: var(--bosque);
+}
+.stat__label {
+	margin-top: var(--sp-2);
+	font-size: var(--fs-caption);
+	color: var(--ink-2);
+	font-weight: 600;
+}
+
+/* ============================================================
+   Estado vacío (Krug: una invitación a actuar, no un mensaje triste)
+   ============================================================ */
+.empty-state {
+	text-align: center;
+	padding: var(--sp-6) var(--sp-4);
+	border: 1px dashed var(--line-strong);
+	border-radius: var(--r-lg);
+	background: rgba(52, 179, 106, 0.04);
+}
+.empty-state__icon {
+	color: var(--campo-claro);
+	margin-bottom: var(--sp-2);
+}
+.empty-state__title {
+	font-family: 'Fraunces', Georgia, serif;
+	font-weight: 700;
+	color: var(--bosque);
+	font-size: 1.05rem;
+}
+.empty-state__hint {
+	color: var(--ink-2);
+	font-size: var(--fs-caption);
+	margin-top: var(--sp-1);
+}
+
+/* ============================================================
+   Campos / selects outlined coherentes (se leen como editables)
+   ============================================================ */
+.q-field--outlined .q-field__control {
+	border-radius: var(--r-md);
+	background: #fff;
+}
+.q-field--outlined .q-field__control:before {
+	border-color: var(--line-strong);
+}
+.q-field--outlined .q-field__control:hover:before {
+	border-color: rgba(23, 58, 39, 0.34);
+}
+.q-field--outlined.q-field--focused .q-field__control:after {
+	border-color: var(--rio);
+	border-width: 2px;
+}
+.q-field--outlined.q-field--focused .q-field__control {
+	box-shadow: 0 0 0 4px rgba(31, 154, 168, 0.16);
+}
+.q-field--focused .q-field__label {
+	color: var(--rio);
+}
+
+/* ============================================================
+   Scrollbar sutil
+   ============================================================ */
+*::-webkit-scrollbar {
+	width: 10px;
+	height: 10px;
+}
+*::-webkit-scrollbar-thumb {
+	background: rgba(31, 139, 87, 0.28);
+	border-radius: 99px;
+	border: 2px solid transparent;
+	background-clip: content-box;
+}
+*::-webkit-scrollbar-thumb:hover {
+	background: rgba(31, 139, 87, 0.45);
+	background-clip: content-box;
+}
+
+/* ============================================================
+   Animación de entrada reutilizable
+   ============================================================ */
+@keyframes v-rise {
+	from {
+		opacity: 0;
+		transform: translateY(14px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+.v-rise {
+	animation: v-rise 0.6s ease both;
+}
+@media (prefers-reduced-motion: reduce) {
+	.v-rise {
+		animation: none;
+	}
+	* {
+		scroll-behavior: auto !important;
+	}
+}
