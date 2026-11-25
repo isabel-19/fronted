@@ -56,8 +56,21 @@
           label="Escribe tu mensaje"
           placeholder="Ej. Tengo pollo, tomate y arroz"
           @keydown.enter.exact.prevent="handleSend"
-        />
-        <div class="row items-center justify-between q-mt-sm assistant-bar">
+        >
+          <template #append>
+            <q-btn
+              round
+              dense
+              flat
+              color="primary"
+              icon="arrow_upward"
+              :loading="assistant.loading"
+              :disable="!draft.trim() || assistant.loading"
+              @click="handleSend"
+            />
+          </template>
+        </q-input>
+        <div class="q-mt-sm assistant-bar">
           <div class="assistant-suggestions">
             <q-chip
               v-for="suggestion in assistant.suggestions"
@@ -69,7 +82,6 @@
               {{ suggestion }}
             </q-chip>
           </div>
-          <q-btn class="btn-sol" unelevated no-caps icon="send" label="Enviar" :loading="assistant.loading" @click="handleSend" />
         </div>
       </q-card-section>
     </q-card>
@@ -164,6 +176,9 @@ function useSuggestion(text) {
 }
 
 .assistant-bar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
   gap: var(--sp-3);
 }
 

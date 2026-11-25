@@ -7,7 +7,10 @@ import {
   previewToken,
   storeAccessToken,
 } from 'boot/axios'
+import { Browser } from '@capacitor/browser'
 import { useProfileStore } from 'stores/profile-store'
+
+const MOBILE_OAUTH_PENDING_KEY = 'vimel_mobile_oauth_pending'
 
 function isNativeCapacitorRuntime() {
   if (typeof window === 'undefined') return false
@@ -18,6 +21,30 @@ function isNativeCapacitorRuntime() {
   }
   const platform = typeof capacitor.getPlatform === 'function' ? capacitor.getPlatform() : ''
   return platform === 'ios' || platform === 'android'
+}
+
+function getLocalStorage() {
+  if (typeof window === 'undefined') return null
+  try {
+    return window.localStorage
+  } catch {
+    return null
+  }
+}
+
+export function markMobileOAuthPending() {
+  getLocalStorage()?.setItem(MOBILE_OAUTH_PENDING_KEY, String(Date.now()))
+}
+
+export function clearMobileOAuthPending() {
+  getLocalStorage()?.removeItem(MOBILE_OAUTH_PENDING_KEY)
+}
+
+export function hasPendingMobileOAuth() {
+  const rawValue = getLocalStorage()?.getItem(MOBILE_OAUTH_PENDING_KEY) || ''
+  const startedAt = Number(rawValue)
+  if (!startedAt) return false
+  return Date.now() - startedAt < 10 * 60 * 1000
 }
 
 function authHeaders(token) {
@@ -122,8 +149,7 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    loginWithGoogle() {
-      const redirectTarget = '/app'
+    async loginWithGoogle() {
       const hasWindow = typeof window !== 'undefined'
       const protocol = (hasWindow && window.location.protocol) || ''
       const host = (hasWindow && window.location.hostname) || ''
@@ -132,14 +158,13 @@ export const useAuthStore = defineStore('auth', {
         protocol === 'ionic:' ||
         (hasWindow && isNativeCapacitorRuntime()) ||
         (/android/i.test((hasWindow && window.navigator.userAgent) || '') && host === 'localhost')
-      const origin = hasWindow ? window.location.origin : ''
 
-      let loginUrl = `${api.defaults.baseURL}/auth/google/login?redirect=${encodeURIComponent(redirectTarget)}`
+      let loginUrl = `${api.defaults.baseURL}/auth/google/login`
       if (isMobileShell) {
-        loginUrl += '&mobile=1'
-      } else if (origin) {
-        // En web devolvemos al mismo host del frontend para preservar la cookie.
-        loginUrl += `&origin=${encodeURIComponent(origin)}`
+        loginUrl += '?mobile=1'
+        markMobileOAuthPending()
+        await Browser.open({ url: loginUrl })
+        return
       }
 
       window.location.href = loginUrl

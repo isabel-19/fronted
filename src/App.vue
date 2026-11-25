@@ -6,12 +6,22 @@
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { App as CapacitorApp } from '@capacitor/app'
+import { Browser } from '@capacitor/browser'
 import { Capacitor } from '@capacitor/core'
-import { useAuthStore } from 'stores/auth-store'
+import { clearMobileOAuthPending, hasPendingMobileOAuth, useAuthStore } from 'stores/auth-store'
 import { clearStoredAccessToken, getAccessTokenFromUrl, storeAccessToken, stripAccessTokenFromUrl } from 'boot/axios'
 
 const router = useRouter()
 const authStore = useAuthStore()
+let lastHandledMobileAuthUrl = ''
+
+function mobileAuthDebug(message, payload) {
+  if (payload === undefined) {
+    console.debug(`[mobile-auth] ${message}`)
+    return
+  }
+  console.debug(`[mobile-auth] ${message}`, payload)
+}
 
 function isMobileAuthUrl(url) {
   if (!url) return false
@@ -25,25 +35,67 @@ function isMobileAuthUrl(url) {
 }
 
 async function handleMobileAuth(url) {
-  if (!isMobileAuthUrl(url)) return
+  mobileAuthDebug('handleMobileAuth recibido', { url, pending: hasPendingMobileOAuth() })
+  if (!isMobileAuthUrl(url)) {
+    mobileAuthDebug('ignorado porque no coincide con el esquema esperado', url)
+    return
+  }
+  if (!hasPendingMobileOAuth()) {
+    mobileAuthDebug('ignorado porque no hay OAuth pendiente')
+    return
+  }
+  if (url === lastHandledMobileAuthUrl) {
+    mobileAuthDebug('ignorado porque ya se proceso esta URL')
+    return
+  }
+
+  lastHandledMobileAuthUrl = url
+
+  try {
+    await Browser.close()
+  } catch {
+    // Ignorar si el navegador del sistema ya estaba cerrado.
+  }
 
   const params = new URL(url).searchParams
   const redirect = params.get('redirect') || '/app'
   const token = params.get('token') || ''
+  const oauthError = params.get('error') || ''
+  mobileAuthDebug('callback parseado', {
+    redirect,
+    hasToken: !!token,
+    oauthError,
+  })
 
-  if (token) {
-    storeAccessToken(token)
+  if (!token) {
+    clearMobileOAuthPending()
+    if (oauthError) {
+      mobileAuthDebug('callback sin token y con error, volver a login', oauthError)
+      clearStoredAccessToken()
+      await router.replace('/login')
+    }
+    if (!oauthError) {
+      mobileAuthDebug('callback sin token ni error; esperando nueva senal o cierre manual')
+    }
+    return
   }
 
+  storeAccessToken(token)
+  mobileAuthDebug('token almacenado, consultando /auth/me')
+
   await authStore.fetchMe().catch(() => {})
+  clearMobileOAuthPending()
+  mobileAuthDebug('resultado despues de /auth/me', {
+    isAuthenticated: authStore.isAuthenticated,
+    redirect,
+  })
 
   if (authStore.isAuthenticated) {
     await router.replace(redirect)
     return
   }
 
-  clearStoredAccessToken()
-  await router.replace('/login')
+  await router.replace(redirect)
 }
 
 async function handleWebAuthFromUrl() {
@@ -76,11 +128,17 @@ onMounted(async () => {
   }
 
   const launchUrl = await CapacitorApp.getLaunchUrl()
+  mobileAuthDebug('launchUrl al iniciar', launchUrl?.url || '(sin launchUrl)')
   if (launchUrl?.url) {
     await handleMobileAuth(launchUrl.url)
   }
 
+  Browser.addListener('browserFinished', () => {
+    mobileAuthDebug('browserFinished recibido')
+  })
+
   CapacitorApp.addListener('appUrlOpen', ({ url }) => {
+    mobileAuthDebug('appUrlOpen recibido', url)
     void handleMobileAuth(url)
   })
 })

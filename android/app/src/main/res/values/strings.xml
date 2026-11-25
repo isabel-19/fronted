@@ -1,7 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<resources>
-    <string name="app_name">Vimel</string>
-    <string name="title_activity_main">Vimel</string>
-    <string name="package_name">com.recetas.saludables</string>
-    <string name="custom_url_scheme">com.recetas.saludables</string>
-</resources>

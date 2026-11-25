@@ -10,7 +10,7 @@
         <q-space />
 
         <div class="row items-center q-gutter-sm actions">
-          <q-btn flat round dense color="white" icon="notifications_none" class="rel" @click="loadReminderSettings">
+          <q-btn flat round dense color="white" icon="notifications_none" class="rel notification-pill" @click="loadReminderSettings">
             <q-badge v-if="notifications > 0" color="negative" floating rounded :label="notifications" />
             <q-menu anchor="bottom right" self="top right" class="notification-menu">
               <q-card class="notification-menu-card">
@@ -329,8 +329,6 @@
     <q-page-container>
       <router-view />
     </q-page-container>
-
-    <FloatingAssistant />
   </q-layout>
 </template>
 
@@ -339,7 +337,6 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { useQuasar } from 'quasar'
 import { useRouter } from 'vue-router'
 import { api } from 'boot/axios'
-import FloatingAssistant from 'components/FloatingAssistant.vue'
 import { useAuthStore } from 'src/stores/auth-store'
 import { useProfileStore } from 'src/stores/profile-store'
 
@@ -424,6 +421,7 @@ const links = [
   { to: '/app/search', label: 'Buscar', icon: 'search' },
   { to: '/app/plan', label: 'Plan', icon: 'event_note' },
   { to: '/app/favorites', label: 'Favoritos', icon: 'favorite_border' },
+  { to: '/app/profile', label: 'Perfil', icon: 'person_outline' },
 ]
 
 function toggleLeftDrawer() {
@@ -853,9 +851,7 @@ onMounted(async () => {
 }
 
 @media (max-width: 799px) {
-  .actions .q-btn:nth-child(1),
-  .actions .q-btn:nth-child(2),
-  .actions .q-btn:nth-child(3) {
+  .actions .notification-pill {
     display: none;
   }
 
